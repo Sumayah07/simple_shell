@@ -6,18 +6,26 @@
 
 #define MAX_LINE_LENGTH 80
 #define MAX_ARGS 10
-
+/**
+ * main - UNIX command line interpreter.
+ * You have to handle the “end of file” condition (Ctrl+D)
+ * The prompt is displayed again each time a command has been executed.
+ * execve will be the core part of your Shell
+ *
+ * Return: Always 0
+ */
 int main(void)
 {
 	char line[MAX_LINE_LENGTH];
 	char *args[MAX_ARGS];
 	int status;
+	int i;
 
 	do {
 		printf("shell> ");
 		fgets(line, MAX_LINE_LENGTH, stdin);
 
-		int i = 0;
+		i = 0;
 		args[i] = strtok(line, " \n");
 		while (args[i] != NULL)
 		{
@@ -26,17 +34,9 @@ int main(void)
 		}
 		args[i] = NULL;
 
-		if (strcmp(args[0], "cd") == 0)
-		{
-			chdir(args[1]);
-			continue;
-		}
-		else if (strcmp(args[0], "exit") == 0)
-		{
-			exit(0);
-		}
+		pid_t pid;
 
-		pid_t pid = fork();
+		pid = fork();
 		if (pid < 0)
 		{
 			perror("fork failed");
